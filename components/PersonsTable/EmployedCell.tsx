@@ -3,13 +3,16 @@ import { CellContext } from "@tanstack/react-table";
 import { Checkbox } from "../ui/checkbox";
 import { usePersonStore } from "@/lib/stores/personStore";
 import { useShallow } from "zustand/shallow";
+import { useState } from "react";
 
 type EmployedCellProps = CellContext<PersonsTableRowData, boolean>;
 
-const EmployedCell = ({ getValue, row, table }: EmployedCellProps) => {
+const EmployedCell = ({ getValue, row }: EmployedCellProps) => {
 	const [updatePerson, getPersonByID] = usePersonStore(
 		useShallow((state) => [state.updatePerson, state.getPersonByID]),
 	);
+
+	const [employed, setEmployed] = useState(getValue());
 
 	return (
 		<div>
@@ -21,9 +24,10 @@ const EmployedCell = ({ getValue, row, table }: EmployedCellProps) => {
 							...person,
 							employed: Boolean(checkedState),
 						});
+						setEmployed(Boolean(checkedState));
 					}
 				}}
-				checked={getValue()}
+				checked={employed}
 			/>
 		</div>
 	);

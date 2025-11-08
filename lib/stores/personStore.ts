@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { Person, PersonSchema } from "@/lib/dataModel";
 
 interface PersonStoreState {
+	initialized: boolean;
 	persons: Person[];
 	addPerson: (person: Person) => void;
 	addPersons: (persons: Person[]) => void;
@@ -9,6 +10,7 @@ interface PersonStoreState {
 	removePerson: (id: string) => void;
 	getPersonByID: (id: string) => Person | undefined;
 	getAllPersons: () => Person[];
+	resetPersonsStore: () => void;
 }
 
 export const usePersonStore = create<PersonStoreState>((set, get) => {
@@ -21,6 +23,7 @@ export const usePersonStore = create<PersonStoreState>((set, get) => {
 
 		set((state) => ({
 			persons: [...state.persons, parsed],
+			initialized: true,
 		}));
 	};
 
@@ -39,6 +42,7 @@ export const usePersonStore = create<PersonStoreState>((set, get) => {
 					? updatedPerson
 					: personFromStore,
 			),
+			initialized: true,
 		});
 	};
 
@@ -63,9 +67,17 @@ export const usePersonStore = create<PersonStoreState>((set, get) => {
 
 	const getAllPersons = () => get().persons;
 
+	const resetPersonsStore = () => {
+		set({
+			initialized: false,
+			persons: [],
+		});
+	};
+
 	// #endregion Functions
 
 	return {
+		initialized: false,
 		persons: [],
 		addPerson,
 		addPersons,
@@ -73,5 +85,6 @@ export const usePersonStore = create<PersonStoreState>((set, get) => {
 		removePerson,
 		getPersonByID,
 		getAllPersons,
+		resetPersonsStore,
 	};
 });

@@ -9,11 +9,13 @@ const range = (len: number) => {
 	return array;
 };
 
-const newPerson = (): Person => {
+const newPerson = (index: number): Person => {
 	return {
 		id: faker.string.uuid(),
+		index,
+		avatar: faker.image.avatar(),
 		name: faker.person.fullName(),
-		age: faker.number.int(40),
+		age: faker.number.int({ min: 18, max: 80 }),
 		email: faker.internet.email(),
 		createdAt: faker.date.past(),
 		employed: faker.datatype.boolean(),
@@ -23,7 +25,7 @@ const newPerson = (): Person => {
 export function makeData(...lengths: number[]) {
 	const makeDataLevel = (depth = 0): Person[] => {
 		const length = lengths[depth]!;
-		return range(length).map((_): Person => newPerson());
+		return range(length).map((_, index): Person => newPerson(index));
 	};
 
 	return makeDataLevel();
